@@ -2,16 +2,16 @@ import React, { useState } from 'react'
 import { TextField, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-const Error = _ => {
-  return <p>Login failure</p>
-}
-
-const Inactive = _ => {
-  inactive.current = false
-  return <p>Logged out due to inactivity</p>
-}
-
 const Login = ({setTokens, inactive}) => {
+
+  const Error = _ => {
+    return <p>Login failure</p>
+  }
+  
+  const Inactive = _ => {
+    inactive.current = false
+    return <p>Logged out due to inactivity</p>
+  }
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
