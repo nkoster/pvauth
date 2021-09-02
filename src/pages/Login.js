@@ -6,7 +6,7 @@ const Error = _ => {
   return <p>something went wrong, it might be you</p>
 }
 
-const Login = ({setTokens}) => {
+const Login = ({setTokens, inactive}) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -46,6 +46,7 @@ const Login = ({setTokens}) => {
   return (
     <div style={{maxWidth: '600px'}}>
       {err && <Error />}
+      {inactive.current && <p>Logged out due to inactivity</p>}
       <form onSubmit={onLogin} >
         <div className={classes.box} >
           <TextField 

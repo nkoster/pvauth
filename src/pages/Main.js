@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState } from 'react'
 import { Button, TextField } from '@material-ui/core'
 import refresh from '../utils/refresh'
 const TEN_MINUTES = 600000
+const TEN_SECONDS = 10000
 
-const Main = ({tokens, setTokens}) => {
+const Main = ({tokens, setTokens, inactive}) => {
 
   const [testText, setTestText] = useState('')
 
@@ -21,6 +22,7 @@ const Main = ({tokens, setTokens}) => {
     interval.current = setInterval(_ => {
       if (Date.now() > logoutTime.current) {
         console.log('Inactive, logging out')
+        inactive.current = true
         logout()
       }
       if (active.current) {
@@ -28,7 +30,7 @@ const Main = ({tokens, setTokens}) => {
         logoutTime.current = Date.now() + TEN_MINUTES
         refresh(tokens, setTokens)
       }
-    }, 10000)
+    }, TEN_SECONDS)
   }, [])
 
   const onChange = evt => {
