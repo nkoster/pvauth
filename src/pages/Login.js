@@ -3,7 +3,11 @@ import { TextField, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 const Error = _ => {
-  return <p>something went wrong, it might be you</p>
+  return <p>Login failure</p>
+}
+
+const Inactive = _ => {
+  return <p>Logged out due to inactivity</p>
 }
 
 const Login = ({setTokens, inactive}) => {
@@ -43,34 +47,40 @@ const Login = ({setTokens, inactive}) => {
       setErr(true)
     })
   }
+
   return (
     <div style={{maxWidth: '600px'}}>
-      {err && <Error />}
-      {inactive.current && <p>Logged out due to inactivity</p>}
-      <form onSubmit={onLogin} >
-        <div className={classes.box} >
-          <TextField 
-            type='text'
-            name='username'
-            label='Username'
-            className={classes.root}
-            onChange={onChangeUsername}
-          />
-          <TextField
-            type='password'
-            name='password'
-            label='Password'
-            className={classes.root}
-            onChange={onChangePassword}
-          />
-          <Button
-            color='primary'
-            variant='outlined'
-            type='submit'
-            className={classes.root}
-            >Login</Button>
-        </div>
-      </form>
+      <div style={{fontSize: '16px', textAlign: 'center'}}>
+        {err && <Error />}
+        {inactive.current && !err && <Inactive />}
+      </div>
+      <div style={{display: 'flex', alignItems: 'center'}}>
+        <form onSubmit={onLogin} >
+          <div className={classes.box} >
+            <TextField
+              type='text'
+              name='username'
+              label='Username'
+              className={classes.root}
+              onChange={onChangeUsername}
+            />
+            <TextField
+              type='password'
+              name='password'
+              label='Password'
+              className={classes.root}
+              onChange={onChangePassword}
+            />
+            <Button
+              color='primary'
+              variant='outlined'
+              type='submit'
+              className={classes.root}
+              disabled={username.length < 1 || password.length < 1 && true}
+              >Login</Button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
