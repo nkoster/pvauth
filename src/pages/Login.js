@@ -7,6 +7,7 @@ const Error = _ => {
 }
 
 const Inactive = _ => {
+  inactive.current = false
   return <p>Logged out due to inactivity</p>
 }
 
