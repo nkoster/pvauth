@@ -5,9 +5,7 @@ const refresh = async (tokens, callback) => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      token: tokens.refreshToken
-    })
+    body: JSON.stringify({ token: tokens.refreshToken })
   })
   .then(r => r.json())
   .catch(err => {
