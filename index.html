@@ -29,7 +29,7 @@ const logout = _ => {
   window.location.replace(logoutURI)
 }
 div.innerHTML = `<button onclick="logout()"><span>logout</span></button><br>${
-  data.access_token ? data.access_token : 'loading...'
+  data.access_token || 'loading...'
 }`
 window.history.replaceState('FHIR Station', 'FHIR Station', '/')
 const span = document.querySelector('span')
