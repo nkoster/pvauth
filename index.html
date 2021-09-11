@@ -33,7 +33,7 @@ div.innerHTML = `<button onclick="logout()"><span>logout</span></button><br>${
 }`
 window.history.replaceState('FHIR Station', 'FHIR Station', '/')
 const span = document.querySelector('span')
-let expiresIn = parseInt(data.expires_in)
+const expiresIn = parseInt(data.expires_in)
 if (!isNaN(expiresIn)) {
   const logoutTime = Date.now() + expiresIn * 1000 
   setInterval(_ => {
