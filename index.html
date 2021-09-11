@@ -20,7 +20,7 @@ const qs = decodeURI(window.location.href.split('#')[1])
 const qs2obj = qs => qs
   .split('&')
   .map(s => s.split('='))
-  .reduce((o, [k, v]) => (o[k] = v ? v : true, o), {})
+  .reduce((o, [k, v]) => (o[k] = v || true, o), {})
 const data = qs2obj(qs)
 if (!data.access_token) {
   window.location.replace(loginURI)
