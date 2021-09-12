@@ -24,12 +24,12 @@ const qs2obj = qs => qs
 const data = qs2obj(qs)
 if (!data.id_token) window.location.replace(loginURI)
 const parseJwt = (token, part) => {
-  const base64Url = token.split('.')[part]
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-  const jsonPayload = decodeURIComponent(atob(base64).split('')
+  const b64URI = token.split('.')[part]
+  const b64 = b64URI.replace(/-/g, '+').replace(/_/g, '/')
+  const json = decodeURIComponent(atob(b64).split('')
     .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
     .join(''))
-  return JSON.parse(jsonPayload)
+  return JSON.parse(json)
 }
 const logout = _ => { window.location.replace(logoutURI) }
 div.innerHTML = `<button onclick="logout()"><span>logout</span></button><br><pre><code>${
@@ -42,7 +42,7 @@ window.history.replaceState('PV Single Page App', 'PV Single Page App', '/')
 const span = document.querySelector('span')
 const expiresIn = parseInt(data.expires_in)
 if (!isNaN(expiresIn)) {
-  const logoutTime = Date.now() + expiresIn * 1000 
+  const logoutTime = Date.now() + expiresIn * 1000
   setInterval(_ => {
     if (logoutTime - Date.now() < 1) logout()
     const minutesLeft = Math.round((logoutTime - Date.now()) / 1000 / 60)
