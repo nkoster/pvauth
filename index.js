@@ -8,8 +8,7 @@
 
   const qs = decodeURI(window.location.href.split('#')[1])
 
-  const qs2obj = qs => qs
-    .split('&')
+  const qs2obj = qs => qs.split('&')
     .map(s => s.split('='))
     .reduce((o, [k, v]) => (o[k] = v || true, o), {})
 
