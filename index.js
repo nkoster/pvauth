@@ -12,7 +12,7 @@ const qs2obj = qs => qs
 const data = qs2obj(qs)
 if (!data.id_token) window.location.replace(loginURI)
 const logout = _ => { window.location.replace(logoutURI) }
-const userInfo = await fetch(userInfoURI, {
+const userInfo = data.access_token ? await fetch(userInfoURI, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${data.access_token}`
@@ -21,7 +21,7 @@ const userInfo = await fetch(userInfoURI, {
   .then(res => res.text())
   .catch(err => {
     throw err.message
-  })
+  }) : ''
 const parseJwt = (token, part) => {
   const b64 = token.split('.')[part]
     .replace(/-/g, '+').replace(/_/g, '/')
