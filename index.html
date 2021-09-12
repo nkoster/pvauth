@@ -8,7 +8,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-  <title>FHIR Station</title>
+  <title>PV Single Page App</title>
 </head>
 <body>
 <div></div>
@@ -38,7 +38,7 @@ div.innerHTML = `<button onclick="logout()"><span>logout</span></button><br><pre
     JSON.stringify(parseJwt(data.id_token, 1), null, 4) :
     'loading...'
 }</code></pre>`
-window.history.replaceState('FHIR Station', 'FHIR Station', '/')
+window.history.replaceState('PV Single Page App', 'PV Single Page App', '/')
 const span = document.querySelector('span')
 const expiresIn = parseInt(data.expires_in)
 if (!isNaN(expiresIn)) {
