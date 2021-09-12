@@ -24,8 +24,8 @@ const qs2obj = qs => qs
 const data = qs2obj(qs)
 if (!data.id_token) window.location.replace(loginURI)
 const parseJwt = (token, part) => {
-  const b64URI = token.split('.')[part]
-  const b64 = b64URI.replace(/-/g, '+').replace(/_/g, '/')
+  const b64 = token.split('.')[part]
+    .replace(/-/g, '+').replace(/_/g, '/')
   const json = decodeURIComponent(atob(b64).split('')
     .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
     .join(''))
