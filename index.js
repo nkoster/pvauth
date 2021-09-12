@@ -11,6 +11,7 @@ const qs2obj = qs => qs
   .reduce((o, [k, v]) => (o[k] = v || true, o), {})
 const data = qs2obj(qs)
 if (!data.id_token) window.location.replace(loginURI)
+const logout = _ => { window.location.replace(logoutURI) }
 const userInfo = await fetch(userInfoURI, {
     method: 'GET',
     headers: {
@@ -29,17 +30,16 @@ const parseJwt = (token, part) => {
     .join(''))
   return JSON.parse(json)
 }
-const logout = _ => { window.location.replace(logoutURI) }
-div.innerHTML = `<button onclick="logout()"><span>logout</span></button><br><pre><code>${
+div.innerHTML = `<button><span>logout</span></button><br><pre><code>${
   data.id_token ? JSON.stringify(data, null, 4) + '\n' +
     JSON.stringify(parseJwt(data.id_token, 0), null, 4) + '\n' +
     JSON.stringify(parseJwt(data.id_token, 1), null, 4) + '\n' +
     JSON.stringify(parseJwt(userInfo, 1), null, 4)
-    :
-    'loading...'
+    : 'loading...'
 }</code></pre>`
 window.history.replaceState('PV Single Page App', 'PV Single Page App', '/')
 const span = document.querySelector('span')
+document.querySelector('button').addEventListener('click', logout)
 const expiresIn = parseInt(data.expires_in)
 if (!isNaN(expiresIn)) {
   const logoutTime = Date.now() + expiresIn * 1000
