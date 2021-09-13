@@ -1,54 +1,43 @@
 import React from 'react'
 import './App.css'
-import { useState, useEffect, useRef } from 'react'
-import Login from './pages/Login'
+import { useState, useEffect } from 'react'
 import Main from './pages/Main'
 import '@fontsource/roboto'
+import parseJwt from './utils/parseJwt'
+import { UserContext } from './context/UserContext'
 
 const App = _ => {
 
-  const [tokens, setTokens] = useState({})
-  const [loading, setLoading] = useState(true)
+  const loginURI = encodeURI('https://oic.docker.portavita.net:9090/authorize?client_id=local-react-app&redirect_uri=http://localhost:8080&nonce=asdf&response_type=id_token+token&scope=openid')
+  const userInfoURI = encodeURI('https://oic.docker.portavita.net:9090/userinfo')
 
-  const inactive = useRef(false)
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = React.useState()
 
   useEffect(_ => {
-    let tokens = localStorage.getItem('portavitaTokens')
-    if (!tokens) {
-      setLoading(false)
-      return
-    }
-    try {
-      tokens = JSON.parse(tokens)
-    } catch(err) {
-      setLoading(false)
-      return
-    }
-    if (tokens.accessToken) {
-      fetch('https://auth.w3b.net/verify', {
-        method: 'POST',
+    const qs = decodeURI(window.location.href.split('#')[1])
+    const qs2obj = qs => qs.split('&')
+        .map(s => s.split('='))
+        .reduce((o, [k, v]) => (o[k] = v || true, o), {})
+    const data = qs2obj(qs)
+    setUser(data)
+    if (!data.access_token) window.location.replace(loginURI)
+    window.history.replaceState('FHIR Station', 'FHIR Station', '/')
+    ;(async _ => {
+      const userInfo = data.access_token ? await fetch(userInfoURI, {
+        method: 'GET',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          token: tokens.accessToken
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.result) {
-          setTokens(tokens)
-        } else {
-          localStorage.removeItem('portavitaTokens')
+          'Authorization': `Bearer ${data.access_token}`
         }
-        setLoading(false)
       })
+      .then(res => res.text())
       .catch(err => {
-        setLoading(false)
-        console.log(err.message)
-      })
-    }
+        throw err.message
+      }) : ''
+      setUser(current => ({ ...current, userInfo: parseJwt(userInfo, 1) }))
+    })()
+    setUser(data)
+    setLoading(false)
   }, [])
 
   if (loading) return (
@@ -58,18 +47,13 @@ const App = _ => {
   )
 
   return (
-    <div className='App-header'>
-      {tokens.accessToken
-        ? <Main
-            setTokens={setTokens}
-            tokens={tokens}
-            inactive={inactive}
-          />
-        : <Login
-            setTokens={setTokens}
-            inactive={inactive}
-          />}
-    </div>
+    <UserContext.Provider value={user}>
+      <div className='App-header'>
+        {user.access_token
+          ? <Main />
+          : <p>Authenticating...</p>}
+      </div>
+    </UserContext.Provider>
   )
 }
 

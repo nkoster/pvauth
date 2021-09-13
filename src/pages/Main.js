@@ -1,36 +1,34 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { Button, TextField } from '@material-ui/core'
-import refresh from '../utils/refresh'
-const TEN_MINUTES = 600000
-const TEN_SECONDS = 10000
+import { UserContext } from '../context/UserContext'
+const logoutURI = encodeURI('https://docker.portavita.net:8001/uitgelogd.html')
 
-const Main = ({tokens, setTokens, inactive}) => {
+const Main = _ => {
 
+  const user = React.useContext(UserContext)
   const [testText, setTestText] = useState('')
 
   const active = useRef(false)
-  const logoutTime = useRef(Date.now() + TEN_MINUTES)
+  const logoutTime = useRef(Date.now() + 5000)
+  const [minutesLeft, setMinutesLeft] = React.useState('')
   const interval = useRef()
 
   const logout = _ => {
-    localStorage.removeItem('portavitaTokens')
     clearInterval(interval.current)
-    setTokens({})
+    window.location.replace(logoutURI)
   }
 
   useEffect(_ => {
-    interval.current = setInterval(_ => {
-      if (Date.now() > logoutTime.current) {
-        console.log('Inactive, logging out')
-        inactive.current = true
-        logout()
-      }
-      if (active.current) {
-        active.current = false
-        logoutTime.current = Date.now() + TEN_MINUTES
-        refresh(tokens, setTokens)
-      }
-    }, TEN_SECONDS)
+    if (user.expires_in > 1000) {
+      logoutTime.current = Date.now() + user.expires_in * 1000
+      interval.current = setInterval(_ => {
+        if (Date.now() > logoutTime.current) {
+          console.log('Inactive, logging out')
+          logout()
+        }
+        setMinutesLeft(`(auto in ${Math.round((logoutTime.current - Date.now()) / 1000 / 60)} min)`)
+      }, 1000)
+    }
   }, [])
 
   const onChange = evt => {
@@ -40,7 +38,7 @@ const Main = ({tokens, setTokens, inactive}) => {
 
   return (
     <div>
-      <h3>Protected Page</h3>
+      <h4>{user?.userInfo?.family_name}</h4>
       <form>
         <TextField
           label='Portavita Test'
@@ -54,7 +52,7 @@ const Main = ({tokens, setTokens, inactive}) => {
         component='span'
         onClick={logout}
         style={{marginTop: '100px'}}
-      >logout</Button>
+      >logout {minutesLeft}</Button>
     </div>
   )
 }
