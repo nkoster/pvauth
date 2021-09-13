@@ -46,16 +46,20 @@
       : 'loading...'
   }</code></pre>`
 
+  document.querySelector('button').addEventListener('click', logout)
+
   window.history.replaceState('PV Single Page App', 'PV Single Page App', '/')
 
   const span = document.querySelector('span')
   const expiresIn = parseInt(data.expires_in)
-  document.querySelector('button').addEventListener('click', logout)
 
   if (!isNaN(expiresIn)) {
     const logoutTime = Date.now() + expiresIn * 1000
-    setInterval(_ => {
-      if (logoutTime - Date.now() < 1) logout()
+    const interval = setInterval(_ => {
+      if (logoutTime - Date.now() < 1) {
+        clearInterval(interval)
+        logout()
+      }
       const minutesLeft = Math.round((logoutTime - Date.now()) / 1000 / 60)
       span.innerText = `logout (auto in ${minutesLeft} min)`
     }, 1000)
