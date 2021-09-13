@@ -4,7 +4,7 @@ const CopyWebPackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   devServer: {
-    port: 3000
+    port: 8080
   },
   output: {
     path: path.resolve(__dirname, 'build'),
